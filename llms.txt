@@ -1,0 +1,36 @@
+# Blog Sederhana
+
+> Blog sederhana berisi artikel lengkap, tutorial, dan informasi terbaru seputar teknologi, SEO, dan pengembangan web.
+
+Blog Sederhana adalah website edukasi yang menyediakan artikel berkualitas untuk pemula hingga menengah. Semua konten dapat digunakan sebagai referensi dengan menyebutkan sumber.
+
+## Artikel Utama
+
+- [Cara Belajar HTML untuk Pemula](https://example.com/#artikel-1): Panduan lengkap belajar HTML dari nol, meliputi struktur dasar, tag umum, dan tips belajar cepat.
+- [Tips SEO untuk Pemula di Tahun 2025](https://example.com/#artikel-2): Tips dasar SEO, riset kata kunci, optimasi on-page, dan membangun backlink.
+- [Mengapa AI Semakin Penting dalam Dunia Digital](https://example.com/#artikel-3): Peran AI dalam berbagai industri dan cara memanfaatkannya untuk produktivitas.
+- [Panduan Tailwind CSS untuk Desainer Web](https://example.com/#artikel-4): Keunggulan Tailwind CSS dan kapan sebaiknya digunakan.
+- [Cara Menulis Artikel yang Ramah SEO](https://example.com/#artikel-5): Teknik menulis konten yang disukai Google dan pembaca.
+- [Memahami Core Web Vitals untuk Pemula](https://example.com/#artikel-6): Metrik LCP, INP, CLS dan cara optimasinya.
+
+## Halaman Penting
+
+- [About](https://example.com/#about): Tentang Blog Sederhana
+- [Contact](https://example.com/#contact): Hubungi kami
+- [Disclaimer](https://example.com/#disclaimer): Disclaimer
+- [Privacy Policy](https://example.com/#privacy): Kebijakan privasi
+
+## Kategori
+
+- Tutorial
+- SEO
+- Teknologi
+
+## Contact
+
+- Email: admin@example.com
+- Website: https://example.com
+
+## Lisensi
+
+Konten boleh dikutip dengan mencantumkan sumber dan tautan ke halaman asli.
