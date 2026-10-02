@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "artikel-1",
+    "title": "Cara Belajar HTML untuk Pemula",
+    "description": "Panduan lengkap belajar HTML dari nol untuk pemula.",
+    "date": "2025-01-10",
+    "author": "Admin",
+    "category": "Tutorial",
+    "image": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800",
+    "tags": ["HTML", "Web", "Pemula"],
+    "faq": [
+      { "q": "Apakah HTML sulit dipelajari?", "a": "Tidak. HTML adalah salah satu bahasa markup paling mudah untuk pemula." }
+    ],
+    "content": "<p>HTML (HyperText Markup Language) adalah bahasa dasar yang digunakan untuk membuat halaman web.</p><h2>Struktur Dasar HTML</h2><p>Langkah pertama adalah memahami struktur dasar dokumen HTML.</p>"
+  }
+]
