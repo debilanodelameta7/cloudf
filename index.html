@@ -142,183 +142,51 @@
     // KONFIGURASI
     // ============================================================
     const SITE = {
-      name: "Blog Sederhana",
-      url: "https://example.com",
+      name: "GitFare Blog Dev",
+      url: "https://cloudf-8oj.pages.dev/",
       description: "Blog sederhana berisi artikel lengkap dan informasi terbaru",
       author: "Admin"
     };
 
+        // ============================================================
+    // ARTICLES — Load dari data/articles.json (fallback ke statis)
     // ============================================================
-    // DATA ARTIKEL
-    // ============================================================
-    const articles = [
-      {
-        slug: 'artikel-1',
-        title: 'Cara Belajar HTML untuk Pemula',
-        description: 'Panduan lengkap belajar HTML dari nol untuk pemula.',
-        date: '2025-01-10',
-        author: 'Admin',
-        category: 'Tutorial',
-        image: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800',
-        tags: ['HTML', 'Web', 'Pemula'],
-        faq: [
-          { q: 'Apakah HTML sulit dipelajari?', a: 'Tidak. HTML adalah salah satu bahasa markup paling mudah untuk pemula karena sintaksnya sederhana dan hasilnya langsung terlihat di browser.' },
-          { q: 'Berapa lama belajar HTML sampai mahir?', a: 'Dengan latihan 1–2 jam per hari, Anda bisa memahami dasar HTML dalam 1–2 minggu, dan mahir dalam 1–2 bulan.' },
-          { q: 'Editor apa yang cocok untuk pemula?', a: 'VS Code adalah pilihan populer. Notepad++ atau Sublime Text juga bagus untuk memulai.' }
-        ],
-        content: `
-          <p>HTML (HyperText Markup Language) adalah bahasa dasar yang digunakan untuk membuat halaman web. Setiap website yang Anda kunjungi dibangun dengan HTML.</p>
+    let articles = [];  // kosong dulu, akan diisi dari server
 
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Struktur Dasar HTML</h2>
-          <p>Langkah pertama dalam belajar HTML adalah memahami struktur dasar dokumen HTML, yang terdiri dari elemen <code class="bg-slate-100 dark:bg-slate-800 text-brand-700 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm">&lt;html&gt;</code>, <code class="bg-slate-100 dark:bg-slate-800 text-brand-700 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm">&lt;head&gt;</code>, dan <code class="bg-slate-100 dark:bg-slate-800 text-brand-700 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm">&lt;body&gt;</code>.</p>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Tag yang Wajib Dikuasai</h2>
-          <p>Setelah itu, pelajari berbagai tag umum seperti heading, paragraf, link, gambar, dan tabel. Latihan rutin sangat penting untuk menguasai HTML.</p>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Tips Belajar Cepat</h2>
-          <p>Gunakan editor teks sederhana seperti Notepad atau VS Code, lalu buka hasilnya di browser untuk melihat hasilnya secara langsung.</p>
-        `
-      },
-      {
-        slug: 'artikel-2',
-        title: 'Tips SEO untuk Pemula di Tahun 2025',
-        description: 'Pelajari tips dasar SEO agar website mudah ditemukan Google.',
-        date: '2025-01-08',
-        author: 'Admin',
-        category: 'SEO',
-        image: 'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=800',
-        tags: ['SEO', 'Marketing', 'Pemula'],
-        faq: [
-          { q: 'Apa itu SEO?', a: 'SEO (Search Engine Optimization) adalah proses mengoptimalkan website agar muncul di peringkat atas hasil pencarian mesin pencari seperti Google.' },
-          { q: 'Berapa lama hasil SEO terlihat?', a: 'Umumnya 3–6 bulan untuk melihat hasil signifikan, tergantung kompetisi kata kunci dan kualitas konten.' },
-          { q: 'Apakah SEO masih relevan di era AI?', a: 'Ya, justru semakin penting. AI seperti Google SGE dan ChatGPT menggunakan konten berkualitas yang dioptimasi SEO sebagai sumber jawaban.' }
-        ],
-        content: `
-          <p>SEO adalah proses mengoptimalkan website agar muncul di peringkat atas hasil pencarian mesin pencari seperti Google.</p>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Tips SEO Dasar</h2>
-          <ul class="list-disc pl-6 space-y-1">
-            <li>Lakukan riset kata kunci yang relevan dengan konten Anda.</li>
-            <li>Buat judul dan meta description yang menarik.</li>
-            <li>Gunakan struktur heading yang benar (H1, H2, H3).</li>
-            <li>Optimalkan kecepatan website.</li>
-            <li>Buat konten berkualitas dan bermanfaat bagi pembaca.</li>
-            <li>Bangun backlink dari website terpercaya.</li>
-          </ul>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Konsistensi adalah Kunci</h2>
-          <p>SEO bukan hasil instan, tetapi investasi jangka panjang. Teruslah belajar dan beradaptasi dengan algoritma terbaru.</p>
-        `
-      },
-      {
-        slug: 'artikel-3',
-        title: 'Mengapa AI Semakin Penting dalam Dunia Digital',
-        description: 'Peran AI dalam berbagai industri dan cara memanfaatkannya.',
-        date: '2025-01-05',
-        author: 'Admin',
-        category: 'Teknologi',
-        image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800',
-        tags: ['AI', 'Teknologi'],
-        faq: [
-          { q: 'Apa itu AI?', a: 'AI (Artificial Intelligence) atau kecerdasan buatan adalah simulasi kecerdasan manusia oleh mesin, terutama sistem komputer.' },
-          { q: 'Bagaimana AI membantu SEO?', a: 'AI membantu analisis kata kunci, pembuatan konten, optimasi teknis, dan prediksi tren pencarian.' }
-        ],
-        content: `
-          <p>Artificial Intelligence (AI) atau kecerdasan buatan telah menjadi bagian penting dalam kehidupan digital kita sehari-hari.</p>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Penerapan AI di Berbagai Bidang</h2>
-          <p>AI digunakan dalam berbagai bidang, mulai dari rekomendasi konten, chatbot layanan pelanggan, analisis data, hingga pengembangan produk.</p>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">AI untuk Pemilik Website</h2>
-          <p>Bagi pemilik website, AI dapat membantu dalam optimasi SEO, pembuatan konten, dan analisis perilaku pengunjung.</p>
-          <p>Memahami dasar-dasar AI akan menjadi keterampilan yang sangat berharga di masa depan.</p>
-        `
-      },
-      {
-        slug: 'artikel-4',
-        title: 'Panduan Tailwind CSS untuk Desainer Web',
-        description: 'Mengapa Tailwind CSS jadi favorit developer modern.',
-        date: '2025-01-03',
-        author: 'Admin',
-        category: 'Tutorial',
-        image: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=800',
-        tags: ['Tailwind', 'CSS', 'Web'],
-        faq: [
-          { q: 'Apakah Tailwind CSS gratis?', a: 'Ya, Tailwind CSS sepenuhnya gratis dan open source di bawah lisensi MIT.' },
-          { q: 'Apakah Tailwind cocok untuk pemula?', a: 'Cocok, selama Anda sudah paham dasar HTML & CSS. Kurva belajarnya singkat karena utility class-nya intuitif.' }
-        ],
-        content: `
-          <p>Tailwind CSS adalah utility-first CSS framework yang memungkinkan Anda membangun desain langsung dari HTML tanpa menulis CSS custom.</p>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Keunggulan Tailwind</h2>
-          <ul class="list-disc pl-6 space-y-1">
-            <li>Pengembangan lebih cepat.</li>
-            <li>Konsistensi desain terjaga.</li>
-            <li>Bundle CSS jadi lebih kecil saat produksi.</li>
-            <li>Mudah dikustomisasi via config.</li>
-          </ul>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Kapan Sebaiknya Digunakan?</h2>
-          <p>Tailwind cocok untuk proyek yang butuh iterasi cepat, tim kecil, atau prototipe. Untuk proyek enterprise, kombinasi dengan component library sangat disarankan.</p>
-        `
-      },
-      {
-        slug: 'artikel-5',
-        title: 'Cara Menulis Artikel yang Ramah SEO',
-        description: 'Teknik menulis konten yang disukai Google dan pembaca.',
-        date: '2025-01-01',
-        author: 'Admin',
-        category: 'SEO',
-        image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800',
-        tags: ['SEO', 'Menulis', 'Konten'],
-        faq: [
-          { q: 'Berapa panjang artikel ideal untuk SEO?', a: 'Umumnya 1000–2000 kata untuk topik kompetitif, tapi yang terpenting adalah kedalaman dan kualitas jawaban.' },
-          { q: 'Apakah keyword stuffing masih efektif?', a: 'Tidak. Google modern mendeteksi keyword stuffing dan bisa menurunkan ranking. Gunakan kata kunci secara natural.' }
-        ],
-        content: `
-          <p>Menulis artikel yang ramah SEO bukan berarti menulis untuk robot. Justru sebaliknya — tulislah untuk manusia, lalu optimalkan untuk mesin pencari.</p>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Prinsip Utama</h2>
-          <ul class="list-disc pl-6 space-y-1">
-            <li>Gunakan judul yang menarik dan mengandung kata kunci.</li>
-            <li>Buat paragraf pendek (2–3 kalimat).</li>
-            <li>Gunakan sub-heading untuk memecah konten.</li>
-            <li>Sertakan gambar dengan alt text.</li>
-            <li>Akhiri dengan kesimpulan atau CTA.</li>
-          </ul>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Fokus pada Pengguna</h2>
-          <p>Artikel terbaik adalah yang menjawab pertanyaan pembaca dengan jelas dan lengkap. Google akan mengikuti jika pengguna puas.</p>
-        `
-      },
-      {
-        slug: 'artikel-6',
-        title: 'Memahami Core Web Vitals untuk Pemula',
-        description: 'Metrik penting yang mempengaruhi ranking Google.',
-        date: '2024-12-28',
-        author: 'Admin',
-        category: 'Teknologi',
-        image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800',
-        tags: ['SEO', 'Performa', 'Web'],
-        faq: [
-          { q: 'Apa itu Core Web Vitals?', a: 'Core Web Vitals adalah tiga metrik yang digunakan Google untuk mengukur pengalaman pengguna: LCP, INP, dan CLS.' },
-          { q: 'Bagaimana cara mengecek Core Web Vitals?', a: 'Gunakan PageSpeed Insights, Google Search Console, atau Chrome DevTools untuk melihat skor website Anda.' }
-        ],
-        content: `
-          <p>Core Web Vitals adalah tiga metrik utama yang digunakan Google untuk menilai pengalaman pengguna sebuah website.</p>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Tiga Metrik Utama</h2>
-          <ul class="list-disc pl-6 space-y-1">
-            <li><strong>LCP (Largest Contentful Paint):</strong> kecepatan elemen terbesar dimuat. Target: &lt; 2.5 detik.</li>
-            <li><strong>INP (Interaction to Next Paint):</strong> responsivitas interaksi. Target: &lt; 200 ms.</li>
-            <li><strong>CLS (Cumulative Layout Shift):</strong> kestabilan layout. Target: &lt; 0.1.</li>
-          </ul>
-
-          <h2 class="text-xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-200">Cara Optimasi</h2>
-          <p>Kompres gambar, gunakan lazy loading, minimalkan JavaScript, dan pastikan layout stabil. Memahami metrik ini akan membantu website Anda naik peringkat.</p>
-        `
-      }
+    // Fallback data statis (kalau fetch gagal)
+    const FALLBACK_ARTICLES = [
+      // paste 1-2 artikel lama di sini sebagai fallback
     ];
+
+    async function loadArticles() {
+      try {
+        const res = await fetch('/data/articles.json', { cache: 'no-cache' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        if (Array.isArray(data) && data.length) {
+          articles = data;
+          console.log('✓ Loaded', data.length, 'articles from server');
+        } else {
+          throw new Error('Empty data');
+        }
+      } catch (e) {
+        console.warn('⚠ Gagal load articles.json, pakai fallback:', e.message);
+        articles = FALLBACK_ARTICLES;
+      }
+
+      // Update tampilan
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        if (window.location.hash) handleHash();
+        else navigate('home');
+      }
+    }
+
+    // Jalankan load saat DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadArticles);
+    } else {
+      loadArticles();
+    }
 
     // ============================================================
     // UTIL
