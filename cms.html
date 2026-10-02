@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS - Blog Sederhana</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: { brand: { 50:'#eff6ff',100:'#dbeafe',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8' } }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+
+  <style>
+    .md-preview h1 { font-size: 1.75rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+    .md-preview h2 { font-size: 1.4rem; font-weight: 600; margin: 1.25rem 0 0.5rem; }
+    .md-preview h3 { font-size: 1.15rem; font-weight: 600; margin: 1rem 0 0.5rem; }
+    .md-preview p { margin: 0.75rem 0; line-height: 1.7; }
+    .md-preview ul { list-style: disc; padding-left: 1.5rem; margin: 0.75rem 0; }
+    .md-preview ol { list-style: decimal; padding-left: 1.5rem; margin: 0.75rem 0; }
+    .md-preview code { background: #f1f5f9; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-size: 0.9em; color: #1d4ed8; }
+    .md-preview pre { background: #0f172a; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin: 1rem 0; }
+    .md-preview pre code { background: transparent; padding: 0; color: inherit; }
+    .md-preview blockquote { border-left: 4px solid #3b82f6; padding-left: 1rem; margin: 1rem 0; color: #64748b; font-style: italic; }
+    .md-preview a { color: #2563eb; text-decoration: underline; }
+    .md-preview img { max-width: 100%; border-radius: 0.5rem; margin: 1rem 0; }
+    .dark .md-preview h1, .dark .md-preview h2, .dark .md-preview h3 { color: #f1f5f9; }
+    .dark .md-preview p, .dark .md-preview li { color: #cbd5e1; }
+    .dark .md-preview code { background: #1e293b; color: #60a5fa; }
+    .dark .md-preview blockquote { border-color: #60a5fa; }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    /* Loading spinner */
+    .spin { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+
+<body class="font-sans bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 min-h-screen">
+
+  <!-- ============ CONNECT SCREEN ============ -->
+  <div id="connect-screen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 max-w-md w-full p-8">
+      <div class="text-center mb-6">
+        <div class="text-5xl mb-3">🐙</div>
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">CMS Panel</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Connect ke GitHub Repo</p>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">GitHub Username / Owner</label>
+          <input type="text" id="setup-owner" placeholder="username"
+            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Repository Name</label>
+          <input type="text" id="setup-repo" placeholder="blog-sederhana"
+            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Branch</label>
+          <input type="text" id="setup-branch" value="main"
+            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Personal Access Token</label>
+          <input type="password" id="setup-token" placeholder="ghp_xxxxxxxxxxxxxxxx"
+            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <p class="text-xs text-slate-400 mt-1">
+            Buat di <a href="https://github.com/settings/tokens/new?scopes=repo&description=CMS+Blog" target="_blank" class="text-brand-600 underline">github.com/settings/tokens</a> — scope: <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">repo</code>
+          </p>
+        </div>
+
+        <button onclick="connectGitHub()" id="connect-btn"
+          class="w-full px-4 py-3 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-medium transition">
+          🔌 Connect & Load Data
+        </button>
+
+        <p id="connect-status" class="text-xs text-center text-slate-500 dark:text-slate-400 min-h-[1rem]"></p>
+
+        <div class="pt-3 border-t border-slate-200 dark:border-slate-700 text-center">
+          <p class="text-xs text-slate-400">Token hanya disimpan di browser Anda (localStorage).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MAIN CMS ============ -->
+  <div id="cms-app" class="hidden min-h-screen">
+    <div class="flex min-h-screen">
+
+      <!-- SIDEBAR -->
+      <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex-shrink-0 hidden md:flex flex-col fixed h-screen">
+        <div class="p-5 border-b border-slate-200 dark:border-slate-700">
+          <h1 class="text-lg font-bold text-slate-900 dark:text-slate-100">⚙️ CMS</h1>
+          <p id="repo-info" class="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate"></p>
+        </div>
+
+        <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+          <button onclick="showView('dashboard')" data-view="dashboard" class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-2">
+            <span>📊</span> Dashboard
+          </button>
+          <button onclick="showView('articles')" data-view="articles" class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-2">
+            <span>📄</span> Artikel
+            <span id="count-articles" class="ml-auto text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700">0</span>
+          </button>
+          <button onclick="showView('new')" data-view="new" class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-2">
+            <span>➕</span> Tambah Artikel
+          </button>
+          <button onclick="showView('categories')" data-view="categories" class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-2">
+            <span>📂</span> Kategori & Tag
+          </button>
+          <button onclick="showView('settings')" data-view="settings" class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-2">
+            <span>⚙️</span> Pengaturan
+          </button>
+        </nav>
+
+        <div class="p-3 border-t border-slate-200 dark:border-slate-700 space-y-2">
+          <button onclick="pushToGitHub()" id="quick-push" class="w-full px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-medium transition">
+            🚀 Push ke GitHub
+          </button>
+          <div class="flex gap-2">
+            <a href="index.html" target="_blank" class="flex-1 text-center px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-medium transition">
+              👁 Lihat
+            </a>
+            <button onclick="toggleDark()" class="flex-1 px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-medium transition">
+              <span id="dark-icon">🌙</span>
+            </button>
+          </div>
+          <button onclick="disconnectGitHub()" class="w-full px-3 py-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 text-xs font-medium transition">
+            🔌 Disconnect
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="flex-1 md:ml-64 min-w-0">
+        <!-- Mobile Header -->
+        <div class="md:hidden bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-3 flex items-center justify-between sticky top-0 z-40">
+          <h1 class="font-bold text-slate-900 dark:text-slate-100">⚙️ CMS</h1>
+          <button onclick="document.getElementById('sidebar').classList.toggle('hidden')" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700">☰</button>
+        </div>
+
+        <!-- Status Bar -->
+        <div id="status-bar" class="bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-2 flex items-center justify-between text-xs sticky top-0 z-30">
+          <div class="flex items-center gap-2">
+            <span id="status-dot" class="w-2 h-2 rounded-full bg-green-500"></span>
+            <span id="status-text" class="text-slate-600 dark:text-slate-400">Terhubung</span>
+          </div>
+          <span id="save-status" class="text-slate-400">Tersimpan</span>
+        </div>
+
+        <div id="view-container" class="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg shadow-lg text-sm font-medium opacity-0 pointer-events-none transition-opacity z-50"></div>
+
+  <!-- CONFIRM MODAL -->
+  <div id="confirm-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl max-w-md w-full p-6">
+      <h3 id="confirm-title" class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Konfirmasi</h3>
+      <p id="confirm-message" class="text-sm text-slate-600 dark:text-slate-400 mb-6">Yakin?</p>
+      <div class="flex gap-2 justify-end">
+        <button onclick="closeConfirm()" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-sm font-medium transition">Batal</button>
+        <button id="confirm-ok" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // CONFIG & STATE
+    // ============================================================
+    const GH_KEY = 'cms-github-config';
+    const DRAFT_KEY = 'cms-draft';
+
+    const state = {
+      config: null,
+      articles: [],
+      settings: {
+        siteName: 'Blog Sederhana',
+        siteUrl: 'https://example.com',
+        author: 'Admin',
+        description: 'Blog sederhana berisi artikel lengkap dan informasi terbaru',
+        defaultImage: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800'
+      },
+      currentView: 'dashboard',
+      editingSlug: null,
+      dirty: false
+    };
+
+    const DATA_PATH = 'data/articles.json';
+    const SETTINGS_PATH = 'data/settings.json';
+
+    // ============================================================
+    // GITHUB API WRAPPER
+    // ============================================================
+    const GitHub = {
+      async request(path, options = {}) {
+        const { owner, repo, token } = state.config;
+        const url = `https://api.github.com/repos/${owner}/${repo}${path}`;
+        const res = await fetch(url, {
+          ...options,
+          headers: {
+            'Authorization': `token ${token}`,
+            'Accept': 'application/vnd.github+json',
+            'Content-Type': 'application/json',
+            ...(options.headers || {})
+          }
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || `HTTP ${res.status}`);
+        }
+        return res.json();
+      },
+
+      async getFile(path) {
+        try {
+          const data = await this.request(`/contents/${path}?ref=${state.config.branch}&t=${Date.now()}`);
+          const content = decodeURIComponent(escape(atob(data.content)));
+          return { content, sha: data.sha };
+        } catch (e) {
+          if (e.message.includes('Not Found') || e.message.includes('404')) return null;
+          throw e;
+        }
+      },
+
+      async putFile(path, content, message) {
+        const existing = await this.getFile(path);
+        const body = {
+          message,
+          content: btoa(unescape(encodeURIComponent(content))),
+          branch: state.config.branch
+        };
+        if (existing) body.sha = existing.sha;
+
+        await this.request(`/contents/${path}`, {
+          method: 'PUT',
+          body: JSON.stringify(body)
+        });
+      }
+    };
+
+    // ============================================================
+    // CONNECT
+    // ============================================================
+    async function connectGitHub() {
+      const config = {
+        owner: document.getElementById('setup-owner').value.trim(),
+        repo: document.getElementById('setup-repo').value.trim(),
+        branch: document.getElementById('setup-branch').value.trim() || 'main',
+        token: document.getElementById('setup-token').value.trim()
+      };
+
+      if (!config.owner || !config.repo || !config.token) {
+        return setConnectStatus('❌ Semua field wajib diisi', 'red');
+      }
+
+      setConnectStatus('⏳ Menghubungi GitHub...', 'slate');
+      document.getElementById('connect-btn').disabled = true;
+
+      try {
+        // Test koneksi
+        const test = await fetch(`https://api.github.com/repos/${config.owner}/${config.repo}`, {
+          headers: { Authorization: `token ${config.token}` }
+        });
+        if (!test.ok) throw new Error('Repo tidak ditemukan atau token invalid');
+
+        state.config = config;
+        localStorage.setItem(GH_KEY, JSON.stringify(config));
+
+        setConnectStatus('✅ Berhasil! Memuat data...', 'green');
+
+        await loadAllData();
+
+        // Tampilkan CMS
+        document.getElementById('connect-screen').classList.add('hidden');
+        document.getElementById('cms-app').classList.remove('hidden');
+        document.getElementById('repo-info').textContent = `${config.owner}/${config.repo}`;
+
+        showView('dashboard');
+        showToast('Terhubung ke GitHub!');
+      } catch (e) {
+        setConnectStatus('❌ ' + e.message, 'red');
+        document.getElementById('connect-btn').disabled = false;
+      }
+    }
+
+    function setConnectStatus(msg, color) {
+      const el = document.getElementById('connect-status');
+      el.textContent = msg;
+      el.className = 'text-xs text-center min-h-[1rem] text-' + color + '-600';
+    }
+
+    function disconnectGitHub() {
+      if (!confirm('Disconnect dari GitHub? Config akan dihapus.')) return;
+      localStorage.removeItem(GH_KEY);
+      location.reload();
+    }
+
+    // ============================================================
+    // LOAD & SAVE DATA
+    // ============================================================
+    async function loadAllData() {
+      setStatus('Memuat artikel...', 'loading');
+
+      // Load articles.json
+      try {
+        const file = await GitHub.getFile(DATA_PATH);
+        if (file) {
+          state.articles = JSON.parse(file.content);
+        } else {
+          // Buat file kosong
+          state.articles = [];
+        }
+      } catch (e) {
+        console.warn('Load articles error:', e);
+        state.articles = [];
+      }
+
+      // Load settings.json
+      try {
+        const file = await GitHub.getFile(SETTINGS_PATH);
+        if (file) {
+          state.settings = { ...state.settings, ...JSON.parse(file.content) };
+        }
+      } catch (e) {
+        console.warn('Load settings error:', e);
+      }
+
+      updateCounter();
+      setStatus('Terhubung', 'ok');
+    }
+
+    async function saveAllData(silent = false) {
+      if (!silent) setStatus('Menyimpan...', 'loading');
+      try {
+        await GitHub.putFile(
+          DATA_PATH,
+          JSON.stringify(state.articles, null, 2),
+          `Update articles.json - ${new Date().toLocaleString('id-ID')}`
+        );
+        setStatus('Tersimpan', 'ok');
+        state.dirty = false;
+        updateSaveStatus();
+        if (!silent) showToast('Tersimpan ke GitHub!');
+      } catch (e) {
+        setStatus('Gagal simpan: ' + e.message, 'error');
+        showToast('Gagal: ' + e.message);
+        throw e;
+      }
+    }
+
+    async function pushToGitHub() {
+      if (state.dirty) {
+        await saveAllData();
+      } else {
+        showToast('Tidak ada perubahan');
+      }
+    }
+
+    function updateCounter() {
+      document.getElementById('count-articles').textContent = state.articles.length;
+    }
+
+    function markDirty() {
+      state.dirty = true;
+      updateSaveStatus();
+    }
+
+    function updateSaveStatus() {
+      const el = document.getElementById('save-status');
+      if (state.dirty) {
+        el.textContent = '● Belum disimpan';
+        el.className = 'text-amber-500 font-medium';
+      } else {
+        el.textContent = '✓ Tersimpan';
+        el.className = 'text-slate-400';
+      }
+    }
+
+    function setStatus(text, type) {
+      document.getElementById('status-text').textContent = text;
+      const dot = document.getElementById('status-dot');
+      const colors = { ok: 'bg-green-500', loading: 'bg-blue-500 spin', error: 'bg-red-500' };
+      dot.className = 'w-2 h-2 rounded-full ' + (colors[type] || 'bg-green-500');
+    }
+
+    // ============================================================
+    // ROUTING
+    // ============================================================
+    function showView(view, data = null) {
+      state.currentView = view;
+      const container = document.getElementById('view-container');
+
+      document.querySelectorAll('.nav-item').forEach(el => {
+        const active = el.dataset.view === view;
+        el.classList.toggle('bg-brand-50', active);
+        el.classList.toggle('dark:bg-slate-700', active);
+        el.classList.toggle('text-brand-600', active);
+        el.classList.toggle('dark:text-brand-400', active);
+      });
+
+      const views = {
+        dashboard: renderDashboard,
+        articles: renderArticles,
+        new: () => renderEditor(),
+        edit: () => renderEditor(data),
+        categories: renderCategories,
+        settings: renderSettings
+      };
+
+      container.innerHTML = (views[view] || renderDashboard)();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (view === 'new' || view === 'edit') {
+        setTimeout(initEditor, 30);
+      }
+    }
+
+    // ============================================================
+    // VIEW: DASHBOARD
+    // ============================================================
+    function renderDashboard() {
+      const total = state.articles.length;
+      const categories = [...new Set(state.articles.map(a => a.category).filter(Boolean))];
+      const tags = [...new Set(state.articles.flatMap(a => a.tags || []))];
+      const totalWords = state.articles.reduce((sum, a) => {
+        const text = (a.content || '').replace(/<[^>]*>/g, ' ');
+        return sum + text.split(/\s+/).filter(Boolean).length;
+      }, 0);
+
+      const recent = [...state.articles]
+        .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+        .slice(0, 5);
+
+      return `
+        <div class="space-y-6">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">📊 Dashboard</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Ringkasan konten</p>
+          </div>
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            ${statCard('📄', 'Artikel', total)}
+            ${statCard('📂', 'Kategori', categories.length)}
+            ${statCard('🏷️', 'Tags', tags.length)}
+            ${statCard('📝', 'Total Kata', totalWords.toLocaleString('id-ID'))}
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
+            <h3 class="font-semibold text-slate-900 dark:text-slate-100 mb-4">⚡ Aksi Cepat</h3>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="showView('new')" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium transition">➕ Tambah Artikel</button>
+              <button onclick="showView('articles')" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-sm font-medium transition">📄 Lihat Semua</button>
+              <button onclick="pushToGitHub()" class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition">🚀 Push ke GitHub</button>
+              <button onclick="exportJSON()" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-sm font-medium transition">💾 Backup JSON</button>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
+            <h3 class="font-semibold text-slate-900 dark:text-slate-100 mb-4">🕒 Artikel Terbaru</h3>
+            ${recent.length ? `
+              <div class="space-y-2">
+                ${recent.map(a => `
+                  <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer" onclick="editArticle('${escAttr(a.slug)}')">
+                    ${a.image ? `<img src="${escAttr(a.image)}" alt="" class="w-12 h-12 rounded object-cover bg-slate-200" onerror="this.style.display='none'">` : ''}
+                    <div class="flex-1 min-w-0">
+                      <p class="font-medium text-sm text-slate-800 dark:text-slate-200 truncate">${escapeHtml(a.title)}</p>
+                      <p class="text-xs text-slate-400">${a.date || '-'} · ${escapeHtml(a.category || 'Umum')}</p>
+                    </div>
+                    <span class="text-slate-400">→</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : `<p class="text-sm text-slate-500 text-center py-6">Belum ada artikel. <button onclick="showView('new')" class="text-brand-600 underline">Tambah sekarang</button></p>`}
+          </div>
+        </div>
+      `;
+    }
+
+    function statCard(icon, label, value) {
+      return `
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+          <div class="text-2xl mb-1">${icon}</div>
+          <p class="text-xs text-slate-500 dark:text-slate-400">${label}</p>
+          <p class="text-xl font-bold text-slate-900 dark:text-slate-100">${value}</p>
+        </div>
+      `;
+    }
+
+    // ============================================================
+    // VIEW: ARTICLES
+    // ============================================================
+    function renderArticles() {
+      return `
+        <div class="space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">📄 Artikel</h2>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">${state.articles.length} artikel tersimpan</p>
+            </div>
+            <button onclick="showView('new')" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium transition">➕ Tambah</button>
+          </div>
+
+          <input type="search" id="article-search" placeholder="🔍 Cari artikel..." oninput="filterArticles(this.value)"
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+
+          <div id="article-list" class="space-y-3">
+            ${renderArticleList(state.articles)}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderArticleList(articles) {
+      if (!articles.length) return `<p class="text-center text-slate-500 py-12">Tidak ada artikel.</p>`;
+      return articles.map(a => `
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 flex flex-col sm:flex-row gap-4">
+          ${a.image ? `<img src="${escAttr(a.image)}" alt="" class="w-full sm:w-24 h-32 sm:h-20 rounded-lg object-cover bg-slate-200" onerror="this.style.display='none'">` : ''}
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold text-slate-900 dark:text-slate-100 mb-1">${escapeHtml(a.title)}</h3>
+            <p class="text-xs text-slate-400 mb-2">
+              <span>${a.date || '-'}</span> · <span>${escapeHtml(a.category || 'Umum')}</span>
+              ${a.tags ? ' · ' + a.tags.map(t => '#' + escapeHtml(t)).join(' ') : ''}
+            </p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">${escapeHtml(a.description || '')}</p>
+          </div>
+          <div class="flex sm:flex-col gap-2 flex-shrink-0">
+            <button onclick="editArticle('${escAttr(a.slug)}')" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-xs font-medium transition">✏️ Edit</button>
+            <button onclick="deleteArticle('${escAttr(a.slug)}')" class="px-3 py-1.5 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 text-xs font-medium transition">🗑</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterArticles(q) {
+      const query = q.trim().toLowerCase();
+      const filtered = query
+        ? state.articles.filter(a =>
+            a.title.toLowerCase().includes(query) ||
+            (a.description || '').toLowerCase().includes(query) ||
+            (a.category || '').toLowerCase().includes(query) ||
+            (a.tags || []).some(t => t.toLowerCase().includes(query)))
+        : state.articles;
+      document.getElementById('article-list').innerHTML = renderArticleList(filtered);
+    }
+
+    // ============================================================
+    // VIEW: EDITOR
+    // ============================================================
+    function renderEditor(data = null) {
+      const a = data || {
+        slug: '', title: '', description: '', date: new Date().toISOString().slice(0, 10),
+        author: state.settings.author, category: '', tags: [],
+        image: state.settings.defaultImage, content: '', faq: []
+      };
+      state.editingSlug = data ? a.slug : null;
+
+      // Convert HTML ke Markdown approx (untuk preview) — kita simpan HTML asli
+      const mdContent = data ? htmlToMd(a.content || '') : '';
+
+      return `
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">
+              ${data ? '✏️ Edit Artikel' : '➕ Tambah Artikel'}
+            </h2>
+            <button onclick="showView('articles')" class="text-sm text-slate-500 hover:text-brand-600">← Kembali</button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <div class="space-y-4">
+              <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold mb-1">Judul *</label>
+                  <input type="text" id="f-title" value="${escAttr(a.title)}" oninput="autoSlug()" onchange="markDirty()"
+                    class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">Deskripsi *</label>
+                  <input type="text" id="f-desc" value="${escAttr(a.description)}" onchange="markDirty()"
+                    class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold mb-1">Slug *</label>
+                    <input type="text" id="f-slug" value="${escAttr(a.slug)}" onchange="markDirty()"
+                      class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1">Tanggal *</label>
+                    <input type="date" id="f-date" value="${escAttr(a.date)}" onchange="markDirty()"
+                      class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1">Penulis</label>
+                    <input type="text" id="f-author" value="${escAttr(a.author || '')}" onchange="markDirty()"
+                      class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold mb-1">Kategori</label>
+                    <input type="text" id="f-category" value="${escAttr(a.category)}" onchange="markDirty()" list="cat-list"
+                      class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <datalist id="cat-list">
+                      ${[...new Set(state.articles.map(x => x.category).filter(Boolean))].map(c => `<option value="${escAttr(c)}">`).join('')}
+                    </datalist>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">Tags (pisah koma)</label>
+                  <input type="text" id="f-tags" value="${escAttr((a.tags || []).join(', '))}" onchange="markDirty()"
+                    class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">URL Gambar</label>
+                  <input type="text" id="f-image" value="${escAttr(a.image)}" onchange="markDirty()"
+                    class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+              </div>
+
+              <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
+                <label class="block text-xs font-semibold mb-1">Konten (Markdown) *</label>
+                <textarea id="f-content" rows="18" oninput="updateLivePreview(); markDirty()"
+                  class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 resize-y">${escapeHtml(mdContent)}</textarea>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <button onclick="saveArticle(false)" class="px-5 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium transition">💾 Simpan</button>
+                <button onclick="saveArticle(true)" class="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition">💾 Simpan & Push</button>
+                <button onclick="showView('articles')" class="px-5 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-sm font-medium transition">Batal</button>
+              </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
+              <h3 class="font-semibold text-slate-900 dark:text-slate-100 mb-3 pb-3 border-b border-slate-200 dark:border-slate-700 text-sm">👁 Live Preview</h3>
+              <div id="live-preview" class="md-preview text-slate-700 dark:text-slate-300 text-sm">
+                ${mdContent ? marked.parse(mdContent) : '<p class="text-slate-400 italic text-center py-8">Preview akan muncul...</p>'}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function initEditor() { updateLivePreview(); }
+
+    function autoSlug() {
+      const title = document.getElementById('f-title').value;
+      const slugField = document.getElementById('f-slug');
+      if (state.editingSlug === null || !slugField.value) {
+        slugField.value = title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').substring(0, 60);
+      }
+    }
+
+    function updateLivePreview() {
+      const md = document.getElementById('f-content').value;
+      const el = document.getElementById('live-preview');
+      if (!el) return;
+      if (!md) { el.innerHTML = '<p class="text-slate-400 italic text-center py-8">Preview akan muncul...</p>'; return; }
+      const html = marked.parse(md);
+      el.innerHTML = window.DOMPurify ? DOMPurify.sanitize(html) : html;
+    }
+
+    function saveArticle(pushNow = false) {
+      const md = document.getElementById('f-content').value;
+      const htmlContent = window.DOMPurify
+        ? DOMPurify.sanitize(marked.parse(md))
+        : marked.parse(md);
+
+      const a = {
+        slug: document.getElementById('f-slug').value.trim(),
+        title: document.getElementById('f-title').value.trim(),
+        description: document.getElementById('f-desc').value.trim(),
+        date: document.getElementById('f-date').value,
+        author: document.getElementById('f-author').value.trim() || 'Admin',
+        category: document.getElementById('f-category').value.trim() || 'Umum',
+        tags: document.getElementById('f-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+        image: document.getElementById('f-image').value.trim(),
+        faq: [],
+        content: htmlContent
+      };
+
+      if (!a.title || !a.slug) return showToast('Judul & slug wajib!');
+
+      const dup = state.articles.find(x => x.slug === a.slug && x.slug !== state.editingSlug);
+      if (dup) return showToast('Slug sudah dipakai!');
+
+      if (state.editingSlug) {
+        const idx = state.articles.findIndex(x => x.slug === state.editingSlug);
+        if (idx !== -1) state.articles[idx] = a;
+      } else {
+        state.articles.unshift(a);
+      }
+
+      updateCounter();
+      markDirty();
+
+      if (pushNow) {
+        saveAllData().then(() => showView('articles'));
+      } else {
+        showToast('Tersimpan lokal. Klik "Push" untuk upload.');
+        showView('articles');
+      }
+    }
+
+    function editArticle(slug) {
+      const a = state.articles.find(x => x.slug === slug);
+      if (a) showView('edit', a);
+    }
+
+    function deleteArticle(slug) {
+      const article = state.articles.find(x => x.slug === slug);
+      if (!article) return;
+      showConfirm(`Hapus "${article.title}"?`, 'Artikel akan dihapus dari daftar.', async () => {
+        state.articles = state.articles.filter(x => x.slug !== slug);
+        updateCounter();
+        markDirty();
+        showView('articles');
+        showToast('Artikel dihapus (lokal). Push untuk sync.');
+      });
+    }
+
+    // ============================================================
+    // VIEW: CATEGORIES & TAGS
+    // ============================================================
+    function renderCategories() {
+      const catCount = {};
+      const tagCount = {};
+      state.articles.forEach(a => {
+        if (a.category) catCount[a.category] = (catCount[a.category] || 0) + 1;
+        (a.tags || []).forEach(t => tagCount[t] = (tagCount[t] || 0) + 1);
+      });
+
+      return `
+        <div class="space-y-6">
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">📂 Kategori & Tag</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
+              <h3 class="font-semibold mb-4 text-slate-900 dark:text-slate-100">📂 Kategori (${Object.keys(catCount).length})</h3>
+              <div class="space-y-2">
+                ${Object.entries(catCount).sort((a,b) => b[1]-a[1]).map(([name, count]) => `
+                  <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-900">
+                    <span class="text-sm font-medium">${escapeHtml(name)}</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400">${count}</span>
+                  </div>
+                `).join('') || '<p class="text-sm text-slate-500 text-center py-4">Belum ada kategori</p>'}
+              </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
+              <h3 class="font-semibold mb-4 text-slate-900 dark:text-slate-100">🏷️ Tags (${Object.keys(tagCount).length})</h3>
+              <div class="flex flex-wrap gap-2">
+                ${Object.entries(tagCount).sort((a,b) => b[1]-a[1]).map(([tag, count]) => `
+                  <span class="text-xs px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                    #${escapeHtml(tag)} <span class="text-slate-400">${count}</span>
+                  </span>
+                `).join('') || '<p class="text-sm text-slate-500 text-center py-4">Belum ada tag</p>'}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ============================================================
+    // VIEW: SETTINGS
+    // ============================================================
+    function renderSettings() {
+      return `
+        <div class="space-y-6">
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">⚙️ Pengaturan</h2>
+
+          <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 space-y-3">
+            <div>
+              <label class="block text-xs font-semibold mb-1">Nama Website</label>
+              <input type="text" id="s-name" value="${escAttr(state.settings.siteName)}"
+                class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">URL Website</label>
+              <input type="text" id="s-url" value="${escAttr(state.settings.siteUrl)}"
+                class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Author</label>
+              <input type="text" id="s-author" value="${escAttr(state.settings.author)}"
+                class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Deskripsi</label>
+              <input type="text" id="s-desc" value="${escAttr(state.settings.description)}"
+                class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Gambar Default</label>
+              <input type="text" id="s-img" value="${escAttr(state.settings.defaultImage)}"
+                class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <button onclick="saveSettings()" class="px-5 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium transition">💾 Simpan & Push</button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function saveSettings() {
+      state.settings = {
+        siteName: document.getElementById('s-name').value.trim(),
+        siteUrl: document.getElementById('s-url').value.trim(),
+        author: document.getElementById('s-author').value.trim(),
+        description: document.getElementById('s-desc').value.trim(),
+        defaultImage: document.getElementById('s-img').value.trim()
+      };
+      try {
+        await GitHub.putFile(
+          SETTINGS_PATH,
+          JSON.stringify(state.settings, null, 2),
+          `Update settings.json - ${new Date().toLocaleString('id-ID')}`
+        );
+        showToast('Pengaturan tersimpan!');
+      } catch (e) {
+        showToast('Gagal: ' + e.message);
+      }
+    }
+
+    // ============================================================
+    // BACKUP / EXPORT
+    // ============================================================
+    function exportJSON() {
+      const blob = new Blob([JSON.stringify(state.articles, null, 2)], { type: 'application/json' });
+      downloadBlob(blob, `articles-backup-${Date.now()}.json`);
+      showToast('Backup diunduh');
+    }
+
+    // ============================================================
+    // CONFIRM MODAL
+    // ============================================================
+    let confirmCallback = null;
+    function showConfirm(title, msg, onOk) {
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-message').textContent = msg;
+      document.getElementById('confirm-modal').classList.remove('hidden');
+      confirmCallback = onOk;
+    }
+    function closeConfirm() {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      confirmCallback = null;
+    }
+    document.getElementById('confirm-ok').onclick = () => {
+      if (confirmCallback) confirmCallback();
+      closeConfirm();
+    };
+
+    // ============================================================
+    // HTML <-> MD HELPER (sederhana)
+    // ============================================================
+    function htmlToMd(html) {
+      if (!html) return '';
+      // Konversi sederhana untuk editor (kalau user edit HTML lama)
+      return html
+        .replace(/<h1[^>]*>(.*?)<\/h1>/gi, '# $1\n\n')
+        .replace(/<h2[^>]*>(.*?)<\/h2>/gi, '## $1\n\n')
+        .replace(/<h3[^>]*>(.*?)<\/h3>/gi, '### $1\n\n')
+        .replace(/<p[^>]*>(.*?)<\/p>/gi, '$1\n\n')
+        .replace(/<strong[^>]*>(.*?)<\/strong>/gi, '**$1**')
+        .replace(/<b[^>]*>(.*?)<\/b>/gi, '**$1**')
+        .replace(/<em[^>]*>(.*?)<\/em>/gi, '*$1*')
+        .replace(/<li[^>]*>(.*?)<\/li>/gi, '- $1\n')
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<[^>]+>/g, '')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+    }
+
+    // ============================================================
+    // UTIL
+    // ============================================================
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+    function escAttr(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, '&#10;');
+    }
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.opacity = '1';
+      setTimeout(() => { t.style.opacity = '0'; }, 2400);
+    }
+    function toggleDark() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      document.getElementById('dark-icon').textContent = isDark ? '☀️' : '🌙';
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    (function init() {
+      // Dark mode
+      const saved = localStorage.getItem('theme');
+      const prefers = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved ? saved === 'dark' : prefers) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('dark-icon').textContent = '☀️';
+      }
+
+      // Auto-connect kalau config tersimpan
+      const savedConfig = localStorage.getItem(GH_KEY);
+      if (savedConfig) {
+        state.config = JSON.parse(savedConfig);
+        document.getElementById('setup-owner').value = state.config.owner;
+        document.getElementById('setup-repo').value = state.config.repo;
+        document.getElementById('setup-branch').value = state.config.branch;
+        document.getElementById('setup-token').value = state.config.token;
+        // Auto connect
+        connectGitHub();
+      }
+
+      // Warn on leave if dirty
+      window.addEventListener('beforeunload', (e) => {
+        if (state.dirty) {
+          e.preventDefault();
+          e.returnValue = '';
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>
